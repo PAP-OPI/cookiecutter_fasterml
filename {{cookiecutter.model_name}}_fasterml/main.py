@@ -5,7 +5,7 @@ class {{cookiecutter.model_name}}(Trainable):
     def preprocess_data(self, df: pd.DataFrame) -> pd.DataFrame:
         preprocessed_data = df.copy()
 
-        # AUI REALIZA TODO EL PREPROCESAMIENTO DE TUS DATOS
+        # AQUI REALIZA TODO EL PREPROCESAMIENTO DE TUS DATOS
 
         return preprocessed_data
 
