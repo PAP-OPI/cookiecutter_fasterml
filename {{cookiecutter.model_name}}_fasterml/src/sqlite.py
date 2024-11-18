@@ -2,9 +2,10 @@ import os
 import sqlite3
 from typing import Any
 
+import base_class_data
 import pandas as pd
 import yaml
-from base_class_data import BaseClass
+from classes import DatabaseConfig
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from yaml2pyclass import CodeGenerator
@@ -93,11 +94,12 @@ def populate_sqlite(configs: list[dict[str, Any]]):
     """
     base_path = os.path.join(os.path.abspath(os.curdir), "schemas")
     for config in configs:
-        dtype = dump_sqlite(config)
-        yml_path = os.path.join(base_path, f"{config.name}.yaml")
+        db_Config = DatabaseConfig(config)
+        dtype = dump_sqlite(db_Config)
+        yml_path = os.path.join(base_path, f"{db_Config.name}.yaml")
         with open(yml_path, "w+") as ff:
             yaml.dump(dtype.to_dict(), ff)
-            BaseClass.from_yaml(yml_path)
+            base_class_data.Config.from_yaml(yml_path)
 
 
 if __name__ == "__main__":

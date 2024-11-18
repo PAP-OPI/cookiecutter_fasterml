@@ -1,5 +1,8 @@
+import dataclasses
 from pydantic import BaseModel
-from yaml2pyclass import CodeGenerator
+import yaml2pyclass
 
-class BaseClass(BaseModel, CodeGenerator):
+
+
+class Config(yaml2pyclass.CodeGenerator, BaseModel):
     pass

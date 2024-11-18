@@ -1,9 +1,18 @@
+import os
+import pickle
+import sys
 import time
 
-from base_class_data import BaseClass
+sys.path.append(os.path.abspath(os.curdir))
+
+import pandas as pd
 from fastapi import FastAPI, Request
 from prometheus_client import Counter, Histogram, generate_latest
 from starlette.responses import Response
+
+from base_class_data import Config
+from main import {{cookiecutter.model_name}}
+
 
 app: FastAPI = FastAPI()
 
@@ -54,14 +63,22 @@ async def metrics():
 
 
 @app.post("/predict")
-async def predict(data: BaseClass):
+async def predict(data: Config):
     """
     Dummy predict endpoint.
     Replace with your actual model prediction logic.
     """
-    # Simulate processing time
-    time.sleep(0.1)
+    pre = {{cookiecutter.model_name}}()
+    df = pd.DataFrame.from_records([data.__dict__])
+    df = pre.preprocess_data(df)
+    
+    with open(os.path.join(os.curdir, '.artifacts/model.pkl'), 'rb') as file:
+        model = pickle.load(file)
 
-    prediction = {{cookiecutter.model_name}}.__predict(data)
+    cols = model.feature_names_in_
 
-    return prediction
+    df = df[cols]
+
+    prediction = model.predict(df)
+
+    return {"result": str(prediction[0])}
