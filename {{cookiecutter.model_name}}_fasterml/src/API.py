@@ -2,6 +2,7 @@ import os
 import pickle
 import sys
 import time
+import sqlite3
 
 sys.path.append(os.path.abspath(os.curdir))
 
@@ -10,7 +11,7 @@ from fastapi import FastAPI, Request
 from prometheus_client import Counter, Histogram, generate_latest
 from starlette.responses import Response
 
-from base_class_data import Config
+from base_class_api import BaseClass
 from main import {{cookiecutter.model_name}}
 
 
@@ -63,22 +64,26 @@ async def metrics():
 
 
 @app.post("/predict")
-async def predict(data: Config):
+async def predict(data: BaseClass):
     """
     Dummy predict endpoint.
     Replace with your actual model prediction logic.
     """
     pre = {{cookiecutter.model_name}}()
     df = pd.DataFrame.from_records([data.__dict__])
-    df = pre.preprocess_data(df)
-    
-    with open(os.path.join(os.curdir, '.artifacts/model.pkl'), 'rb') as file:
+    dx = pre.preprocess_data(df)
+
+    with open(os.path.join(os.curdir, ".artifacts/model.pkl"), "rb") as file:
         model = pickle.load(file)
 
     cols = model.feature_names_in_
 
-    df = df[cols]
+    dx = dx[cols]
+    prediction = model.predict(dx)
 
-    prediction = model.predict(df)
+    df["Survived"] = prediction
+    conn = sqlite3.connect("data.db")
+    df.to_sql("test_data", conn, if_exists="append")
+    conn.close()
 
     return {"result": str(prediction[0])}
