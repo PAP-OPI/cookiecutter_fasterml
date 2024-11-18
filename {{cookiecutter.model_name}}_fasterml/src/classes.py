@@ -14,6 +14,7 @@ import pandas as pd
 class Trainable(ABC):
     model: Any = field(init=False)
     metrics: list[str] = field(default_factory=list)
+    name: str = ""
 
     @abstractmethod
     def preprocess_data(self, df: pd.DataFrame) -> pd.DataFrame:
