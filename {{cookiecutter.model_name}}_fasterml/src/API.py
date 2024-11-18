@@ -18,7 +18,7 @@ from base_class_api import BaseClass
 from main import {{cookiecutter.model_name}}
 
 
-app: FastAPI = FastAPI("Faster ML")
+app: FastAPI = FastAPI()
 
 CPU_PERCENT = Gauge("cpu_percent", "CPU usage percentage")
 CPU_FREQ = Gauge("cpu_frequency_mhz", "CPU frequency in MHz")
