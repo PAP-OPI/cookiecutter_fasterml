@@ -62,7 +62,6 @@ async def predict(data: BaseClass):
     # Simulate processing time
     time.sleep(0.1)
 
-    # Example prediction (Replace this with your model prediction)
-    prediction = {"result": "default_prediction"}
+    prediction = {{cookiecutter.model_name}}.__predict(data)
 
     return prediction

@@ -3,16 +3,15 @@ from __future__ import annotations
 import logging
 import pickle
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import Any
 
 import pandas as pd
 
-
+@dataclass
 class Trainable(ABC):
-    def __init__(self):
-        # TODO: implement model class type
-        self.model: model = None
-        self.metrics: list[str] = []
-        self.name: str = ""
+    model: Any = field(init=False)
+    metrics: list[str] = field(default_factory=list)
 
     @abstractmethod
     def preprocess_data(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -57,6 +56,10 @@ class Trainable(ABC):
             pickle.dump(self.model, file)
 
         logging.info(f"Model {self.name} exported to {self.filePath}")
+    
+    def __predict(self, df: pd.DataFrame):
+        data = self.preprocess_data(df)
+        return self.model.predict(data)
 
     def evaluate(self, df: pd.DataFrame) -> dict[str, float]:
         """Private function to retrieve the evaluation metrics of the model
