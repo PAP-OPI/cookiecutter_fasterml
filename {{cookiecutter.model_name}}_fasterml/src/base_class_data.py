@@ -4,5 +4,5 @@ import yaml2pyclass
 
 
 
-class Config(yaml2pyclass.CodeGenerator, BaseModel):
+class Config(BaseModel, yaml2pyclass.CodeGenerator):
     pass
