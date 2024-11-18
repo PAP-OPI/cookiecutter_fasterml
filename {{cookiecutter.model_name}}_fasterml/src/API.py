@@ -4,11 +4,14 @@ import sys
 import time
 import sqlite3
 
+#Memo test
+import psutil
+
 sys.path.append(os.path.abspath(os.curdir))
 
 import pandas as pd
 from fastapi import FastAPI, Request
-from prometheus_client import Counter, Histogram, generate_latest
+from prometheus_client import Counter, Histogram, generate_latest,Gauge,CONTENT_TYPE_LATEST,start_http_server
 from starlette.responses import Response
 
 from base_class_api import BaseClass
@@ -17,12 +20,32 @@ from main import {{cookiecutter.model_name}}
 
 app: FastAPI = FastAPI()
 
+CPU_PERCENT = Gauge("cpu_percent", "CPU usage percentage")
+CPU_FREQ = Gauge("cpu_frequency_mhz", "CPU frequency in MHz")
+RAM_PERCENT = Gauge("ram_percent", "RAM usage percentage")
+RAM_USED = Gauge("ram_used_bytes", "RAM used in bytes")
+RAM_TOTAL = Gauge("ram_total_bytes", "Total RAM in bytes")
+
 REQUEST_COUNT = Counter(
     "request_count", "App Request Count", ["method", "endpoint", "http_status"]
 )
 REQUEST_LATENCY = Histogram(
     "request_latency_seconds", "Request latency in seconds", ["endpoint"]
 )
+
+def update_cpu_metrics() -> None:
+    CPU_PERCENT.set(psutil.cpu_percent())
+    CPU_FREQ.set(psutil.cpu_freq().current)
+    
+def update_ram_metrics() -> None:
+    ram = psutil.virtual_memory()
+    RAM_PERCENT.set(ram.percent)
+    RAM_USED.set(ram.used)
+    RAM_TOTAL.set(ram.total)
+    
+def update_all_metrics() -> None:
+    update_cpu_metrics()
+    update_ram_metrics()
 
 
 @app.middleware("http")
@@ -60,6 +83,8 @@ async def metrics():
     """
     Expose Prometheus metrics at the /metrics endpoint.
     """
+    update_all_metrics()
+    
     return Response(generate_latest(), media_type="text/plain")
 
 
