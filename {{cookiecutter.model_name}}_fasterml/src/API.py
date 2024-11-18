@@ -51,7 +51,7 @@ async def health_check():
     """
     Health check endpoint to ensure the API is running.
     """
-    return {"status": "Todo Gucci"}
+    return {"status": "Healthy"}
 
 
 @app.get("/metrics")

@@ -69,7 +69,7 @@ def dump_sqlite(database_config: dict[str, Any]) -> pd.Series:
         )
     else:
         raise TypeError("Type of database not supported")
-    data.to_sql("data", conn)
+    data.to_sql("data", conn, if_exists="replace")
     return data.iloc[0].drop(database_config.target)
 
 
