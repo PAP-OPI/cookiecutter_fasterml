@@ -11,7 +11,7 @@ sys.path.append(os.path.abspath(os.curdir))
 
 import pandas as pd
 from fastapi import FastAPI, Request
-from prometheus_client import Counter, Histogram, generate_latest,Gauge,CONTENT_TYPE_LATEST,start_http_server
+from prometheus_client import Counter, Histogram, generate_latest, Gauge
 from starlette.responses import Response
 
 from base_class_api import BaseClass
