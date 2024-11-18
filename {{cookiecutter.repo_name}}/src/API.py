@@ -1,5 +1,6 @@
 import time
 
+from base_class_data import BaseClass
 from fastapi import FastAPI, Request
 from prometheus_client import Counter, Histogram, generate_latest
 from starlette.responses import Response
@@ -53,7 +54,7 @@ async def metrics():
 
 
 @app.post("/predict")
-async def predict(data: dict):
+async def predict(data: BaseClass):
     """
     Dummy predict endpoint.
     Replace with your actual model prediction logic.
