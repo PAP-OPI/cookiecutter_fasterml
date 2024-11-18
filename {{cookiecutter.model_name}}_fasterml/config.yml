@@ -12,6 +12,7 @@ database_config:
     password: secret
     query: SELECT * FROM
     encoding: utf8
+    target: 'y'
   - name: mydbl2
     adapter: mariadb
     hostname: 0.0.0.0
@@ -21,6 +22,7 @@ database_config:
     password: secret
     query: SELECT * FROM
     encoding: utf8
+    target: 'y'
   - name: mydbl3
     adapter: mssql
     hostname: 0.0.0.0
@@ -30,6 +32,7 @@ database_config:
     password: secret
     query: SELECT * FROM
     encoding: utf8
+    target: 'y'
   - name: mydbl4
     adapter: postgresql
     hostname: 0.0.0.0
@@ -39,15 +42,18 @@ database_config:
     password: secret
     query: SELECT * FROM
     encoding: utf8
+    target: 'y'
   - name: mydbl5
     adapter: sqlite
     path: C:\Users\<USER>\test.db
     query: SELECT * FROM
+    target: 'y'
   - name: mydbl6
     adapter: csv
     path: C:\Users\<USER>\test.csv
     sep: \t
     encoding: utf8
+    target: 'y'
 
 prometheus_config:
   port: 9090

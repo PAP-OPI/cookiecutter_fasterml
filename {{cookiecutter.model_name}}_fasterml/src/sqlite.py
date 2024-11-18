@@ -70,7 +70,7 @@ def dump_sqlite(database_config: dict[str, Any]) -> pd.Series:
     else:
         raise TypeError("Type of database not supported")
     data.to_sql("data", conn)
-    return data.iloc[0]
+    return data.iloc[0].drop(database_config.target)
 
 
 def populate_class(route: str) -> CodeGenerator:
@@ -100,9 +100,3 @@ def populate_sqlite(configs: list[dict[str, Any]]):
         with open(yml_path, "w+") as ff:
             yaml.dump(dtype.to_dict(), ff)
             base_class_data.Config.from_yaml(yml_path)
-
-
-if __name__ == "__main__":
-    yaml_file = os.path.join(os.path.abspath(os.curdir), "config.yml")
-    x = populate_class(yaml_file)
-    populate_sqlite(x.database_config)
