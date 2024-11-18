@@ -3,14 +3,16 @@ import sqlite3
 from typing import Any
 
 import pandas as pd
-from yaml2pyclass import CodeGenerator
-from yaml_class import Config
+import yaml
+from base_class_data import BaseClass
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
+from yaml2pyclass import CodeGenerator
+from yaml_class import Config
 
 
 def get_data(controller: str, database_config: dict[str, Any]) -> pd.DataFrame:
-    '''Gets data from various sql type databases
+    """Gets data from various sql type databases
 
     Args:
         controller (str): defines controller to use depending in database
@@ -18,7 +20,7 @@ def get_data(controller: str, database_config: dict[str, Any]) -> pd.DataFrame:
 
     Returns:
         pd.DataFrame: Dataframe containing data
-    '''
+    """
     db_url = URL.create(
         controller,
         username=database_config.user,
@@ -35,15 +37,15 @@ def get_data(controller: str, database_config: dict[str, Any]) -> pd.DataFrame:
     return data
 
 
-def dump_sqlite(database_config: dict[str, Any]) -> None:
-    '''Dumps data to sqlite depending on incoming database type and connection
+def dump_sqlite(database_config: dict[str, Any]) -> pd.Series:
+    """Dumps data to sqlite depending on incoming database type and connection
 
     Args:
         database_config (dict[str, Any]): configuration of databse to connect to and retrieve data from
 
     Raises:
         TypeError: Raises error if database type is not supported
-    '''
+    """
     data: pd.DataFrame
     conn = sqlite3.connect("data.db")
     # , Maria, Sqlite, , , csv
@@ -65,8 +67,9 @@ def dump_sqlite(database_config: dict[str, Any]) -> None:
             encoding=database_config.encoding,
         )
     else:
-        raise TypeError("Type od database not supported")
+        raise TypeError("Type of database not supported")
     data.to_sql("data", conn)
+    return data.iloc[0]
 
 
 def populate_class(route: str) -> CodeGenerator:
@@ -83,13 +86,19 @@ def populate_class(route: str) -> CodeGenerator:
 
 
 def populate_sqlite(configs: list[dict[str, Any]]):
-    '''populates sqlite with data
+    """populates sqlite with data
 
     Args:
         configs (list[dict[str, Any]]): list of database_configs
-    '''
+    """
+    base_path = os.path.join(os.path.abspath(os.curdir), "schemas")
     for config in configs:
-        dump_sqlite(config)
+        dtype = dump_sqlite(config)
+        yml_path = os.path.join(base_path, f"{config.name}.yaml")
+        with open(yml_path, "w+") as ff:
+            yaml.dump(dtype.to_dict(), ff)
+            BaseClass.from_yaml(yml_path)
+
 
 if __name__ == "__main__":
     yaml_file = os.path.join(os.path.abspath(os.curdir), "config.yml")
