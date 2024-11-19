@@ -6,17 +6,19 @@ import sqlite3
 
 #Memo test
 import psutil
+import numpy as np
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 sys.path.append(os.path.abspath(os.curdir))
 
 import pandas as pd
 from fastapi import FastAPI, Request
-from prometheus_client import Counter, Histogram, generate_latest, Gauge
+from prometheus_client import Counter, Histogram, generate_latest, Gauge, CollectorRegistry, Summary
 from starlette.responses import Response
+from typing import Dict, List
 
 from base_class_api import BaseClass
-from main import {{cookiecutter.model_name}}
-
+from main import {{cookiecutter.model_name}}  
 
 app: FastAPI = FastAPI()
 
@@ -33,6 +35,12 @@ REQUEST_LATENCY = Histogram(
     "request_latency_seconds", "Request latency in seconds", ["endpoint"]
 )
 
+MODEL_ACCURACY = Gauge("model_accuracy", "Model accuracy score")
+MODEL_PRECISION = Gauge("model_precision", "Model precision score")
+MODEL_RECALL = Gauge("model_recall", "Model recall score")
+MODEL_F1 = Gauge("model_f1", "Model F1 score")
+PREDICTIONS_COUNT = Counter("predictions_total", "Total number of predictions made")
+
 def update_cpu_metrics() -> None:
     CPU_PERCENT.set(psutil.cpu_percent())
     CPU_FREQ.set(psutil.cpu_freq().current)
@@ -43,11 +51,49 @@ def update_ram_metrics() -> None:
     RAM_USED.set(ram.used)
     RAM_TOTAL.set(ram.total)
     
+def calculate_model_metrics() -> Dict[str, float]:
+    
+    conn = sqlite3.connect("data.db")
+    
+    with open(os.path.join(os.curdir, ".artifacts/model.pkl"), "rb") as file:
+        model = pickle.load(file)
+        
+    query:str = "" #TODO: Define the query to the database to get the data
+    
+    df = pd.read_sql_query(query, conn)
+    
+    if len(df) < 2:
+        return {
+            "accuracy":0,
+            "precision":0,
+            "recall":0,
+            "f1_score":0
+        }
+        
+    y_pred = df["PLACEHOLDER"].values #TODO: Define the way to read the predictions from the dataframe
+    y_true = df["PLACEHOLDER"].values #TODO: Define the way to read he actual values from the dataframe
+    
+    return {
+            "accuracy":accuracy_score(y_true=y_true, y_pred=y_pred),
+            "precision":precision_score(y_true=y_true, y_pred=y_pred),
+            "recall":recall_score(y_true=y_true, y_pred=y_pred),
+            "f1_score":f1_score(y_true=y_true, y_pred=y_pred, zero_division=0)
+        }
+    
+def update_model_metrics() -> None:
+    
+    metrics = calculate_model_metrics()
+    
+    MODEL_ACCURACY.set(metrics["accuracy"])
+    MODEL_PRECISION.set(metrics["precision"])
+    MODEL_RECALL.set(metrics["recall"])
+    MODEL_F1.set(metrics["f1_score"])
+    
 def update_all_metrics() -> None:
     update_cpu_metrics()
     update_ram_metrics()
-
-
+    update_model_metrics()
+    
 @app.middleware("http")
 async def add_prometheus_metrics(request: Request, call_next):
     """
