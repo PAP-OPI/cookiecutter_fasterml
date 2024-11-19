@@ -42,17 +42,27 @@ MODEL_F1 = Gauge("model_f1", "Model F1 score")
 PREDICTIONS_COUNT = Counter("predictions_total", "Total number of predictions made")
 
 def update_cpu_metrics() -> None:
+    """Function to update CPU usage metrics
+    """
     CPU_PERCENT.set(psutil.cpu_percent())
     CPU_FREQ.set(psutil.cpu_freq().current)
     
+#TODO: Implement a way to monitor GPU usage and develop their respective metrics
+    
 def update_ram_metrics() -> None:
+    """Function to update RAM usage metrics
+    """
     ram = psutil.virtual_memory()
     RAM_PERCENT.set(ram.percent)
     RAM_USED.set(ram.used)
     RAM_TOTAL.set(ram.total)
     
 def calculate_model_metrics() -> Dict[str, float]:
-    
+    """Function to calculate standard statistical tests for telemetry
+
+    Returns:
+        Dict[str, float]: Dictionary with the name of the metric as a key, and the value is its respective value.
+    """
     conn = sqlite3.connect("data.db")
     
     with open(os.path.join(os.curdir, ".artifacts/model.pkl"), "rb") as file:
@@ -81,7 +91,8 @@ def calculate_model_metrics() -> Dict[str, float]:
         }
     
 def update_model_metrics() -> None:
-    
+    """Function to update model metrics
+    """
     metrics = calculate_model_metrics()
     
     MODEL_ACCURACY.set(metrics["accuracy"])
@@ -90,6 +101,8 @@ def update_model_metrics() -> None:
     MODEL_F1.set(metrics["f1_score"])
     
 def update_all_metrics() -> None:
+    """Function to update all of the metrics for prometheus integration
+    """
     update_cpu_metrics()
     update_ram_metrics()
     update_model_metrics()
@@ -137,8 +150,7 @@ async def metrics():
 @app.post("/predict")
 async def predict(data: BaseClass):
     """
-    Dummy predict endpoint.
-    Replace with your actual model prediction logic.
+    Predict endpoint.
     """
     pre = {{cookiecutter.model_name}}()
     df = pd.DataFrame.from_records([data.__dict__])
