@@ -108,7 +108,7 @@ async def predict(data: BaseClass):
 
     df["Survived"] = prediction
     conn = sqlite3.connect("data.db")
-    df.to_sql("test_data", conn, if_exists="append")
+    df.to_sql("production_data", conn, if_exists="append")
     conn.close()
 
     return {"result": str(prediction[0])}
