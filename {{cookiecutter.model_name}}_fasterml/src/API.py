@@ -7,7 +7,7 @@ import sqlite3
 #Memo test
 import psutil
 import numpy as np
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from scipy.stats import ks_2samp
 
 sys.path.append(os.path.abspath(os.curdir))
 
@@ -21,6 +21,8 @@ from base_class_api import BaseClass
 from main import {{cookiecutter.model_name}}  
 
 app: FastAPI = FastAPI()
+
+KS = Histogram("ks_test", "pvalues")
 
 CPU_PERCENT = Gauge("cpu_percent", "CPU usage percentage")
 CPU_FREQ = Gauge("cpu_frequency_mhz", "CPU frequency in MHz")
@@ -57,48 +59,45 @@ def update_ram_metrics() -> None:
     RAM_USED.set(ram.used)
     RAM_TOTAL.set(ram.total)
     
+#TODO: Add data drift metrics support for prometheus
+'''
 def calculate_model_metrics() -> Dict[str, float]:
     """Function to calculate standard statistical tests for telemetry
 
     Returns:
         Dict[str, float]: Dictionary with the name of the metric as a key, and the value is its respective value.
     """
+    ks_pvalues: dict = {}
+    
     conn = sqlite3.connect("data.db")
     
     with open(os.path.join(os.curdir, ".artifacts/model.pkl"), "rb") as file:
         model = pickle.load(file)
         
-    query:str = "" #TODO: Define the query to the database to get the data
+    query_train :str = "SELECT * FROM train_data" #TODO: Define the query to the database to get the data
+    query_prod:str = "SELECT * FROM production_data"
     
-    df = pd.read_sql_query(query, conn)
+    train_sample = pd.read_sql_query(query_train, conn)
+    new_sample= pd.read_sql_query(query_prod, conn)
     
-    if len(df) < 2:
-        return {
-            "accuracy":0,
-            "precision":0,
-            "recall":0,
-            "f1_score":0
-        }
-        
-    y_pred = df["PLACEHOLDER"].values #TODO: Define the way to read the predictions from the dataframe
-    y_true = df["PLACEHOLDER"].values #TODO: Define the way to read he actual values from the dataframe
+    conn.close()
     
-    return {
-            "accuracy":accuracy_score(y_true=y_true, y_pred=y_pred),
-            "precision":precision_score(y_true=y_true, y_pred=y_pred),
-            "recall":recall_score(y_true=y_true, y_pred=y_pred),
-            "f1_score":f1_score(y_true=y_true, y_pred=y_pred, zero_division=0)
-        }
+    for column in new_sample.columns:
+        try:
+            test = ks_2samp(new_sample[column].values, train_sample[column].values)
+            ks_pvalues.update({"ks_value":})
+        except:
+            #TODO: Add FasterML exception as warning
+            pass
     
+    return {"ks_value":test.pvalue(), "column": }
+'''
+
 def update_model_metrics() -> None:
     """Function to update model metrics
     """
-    metrics = calculate_model_metrics()
+    pass
     
-    MODEL_ACCURACY.set(metrics["accuracy"])
-    MODEL_PRECISION.set(metrics["precision"])
-    MODEL_RECALL.set(metrics["recall"])
-    MODEL_F1.set(metrics["f1_score"])
     
 def update_all_metrics() -> None:
     """Function to update all of the metrics for prometheus integration
@@ -143,6 +142,7 @@ async def metrics():
     Expose Prometheus metrics at the /metrics endpoint.
     """
     update_all_metrics()
+    calculate_model_metrics()
     
     return Response(generate_latest(), media_type="text/plain")
 
