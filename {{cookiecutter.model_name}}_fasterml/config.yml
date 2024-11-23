@@ -1,0 +1,78 @@
+models:
+  - model_name: "Something"
+    prefix: "Som"
+
+database_config:
+  - name: mydbl
+    adapter: mysql
+    hostname: 0.0.0.0
+    port: 3306
+    database: credit_db
+    user: root
+    password: secret
+    query: SELECT * FROM
+    encoding: utf8
+    target: 'y'
+  - name: mydbl2
+    adapter: mariadb
+    hostname: 0.0.0.0
+    port: 3306
+    database: credit_db
+    user: root
+    password: secret
+    query: SELECT * FROM
+    encoding: utf8
+    target: 'y'
+  - name: mydbl3
+    adapter: mssql
+    hostname: 0.0.0.0
+    port: 3306
+    database: credit_db
+    user: root
+    password: secret
+    query: SELECT * FROM
+    encoding: utf8
+    target: 'y'
+  - name: mydbl4
+    adapter: postgresql
+    hostname: 0.0.0.0
+    port: 3306
+    database: credit_db
+    user: root
+    password: secret
+    query: SELECT * FROM
+    encoding: utf8
+    target: 'y'
+  - name: mydbl5
+    adapter: sqlite
+    path: C:\Users\<USER>\test.db
+    query: SELECT * FROM
+    target: 'y'
+  - name: mydbl6
+    adapter: csv
+    path: C:\Users\<USER>\test.csv
+    sep: \t
+    encoding: utf8
+    target: 'y'
+
+prometheus_config:
+  port: 9090
+  global_: 
+    scrape_interval: 15s
+    evaluation_interval: 15s
+
+grafana_config:
+  apiVersion: 1  
+  datasources:   
+  - name: Prometheus     
+    type: prometheus     
+    access: proxy     
+    url: http://localhost:9090
+    jsonData:       
+      httpMethod: POST       
+      manageAlerts: true       
+      prometheusType: Prometheus       
+      prometheusVersion: 2.44.0       
+      cacheLevel: 'High'       
+      disableRecordingRules: false       
+      incrementalQueryOverlapWindow: 10m       
