@@ -1,0 +1,362 @@
+{
+  "dashboard": {
+    "id": None,
+    "uid": None,
+    "title": "Production Overview Updated",
+    "tags": [
+      "templated"
+    ],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "25s",
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": True,
+          "hide": True,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": True,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "links": [],
+    "panels": [
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "%UID_PROMETHEUS%"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": None
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "options": {
+          "minVizHeight": 75,
+          "minVizWidth": 75,
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": False
+          },
+          "showThresholdLabels": False,
+          "showThresholdMarkers": True,
+          "sizing": "auto"
+        },
+        "pluginVersion": "11.3.0+security-01",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "%UID_PROMETHEUS%"
+            },
+            "disableTextWrap": False,
+            "editorMode": "builder",
+            "expr": "cpu_percent",
+            "fullMetaSearch": False,
+            "includeNullMetadata": True,
+            "legendFormat": "__auto",
+            "range": True,
+            "refId": "A",
+            "useBackend": False
+          }
+        ],
+        "title": "CPU Percent",
+        "type": "gauge"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "%UID_PROMETHEUS%"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": False,
+              "axisCenteredZero": False,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": False,
+                "tooltip": False,
+                "viz": False
+              },
+              "insertNulls": False,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": False,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": None
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "id": 2,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": True
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0+security-01",
+        "targets": [
+          {
+            "disableTextWrap": False,
+            "editorMode": "builder",
+            "expr": "cpu_frequency_mhz",
+            "fullMetaSearch": False,
+            "includeNullMetadata": True,
+            "legendFormat": "__auto",
+            "range": True,
+            "refId": "A",
+            "useBackend": False
+          }
+        ],
+        "title": "CPU Frequency",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "%UID_PROMETHEUS%"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": None
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        },
+        "id": 3,
+        "options": {
+          "minVizHeight": 75,
+          "minVizWidth": 75,
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": False
+          },
+          "showThresholdLabels": False,
+          "showThresholdMarkers": True,
+          "sizing": "auto"
+        },
+        "pluginVersion": "11.3.0+security-01",
+        "targets": [
+          {
+            "disableTextWrap": False,
+            "editorMode": "builder",
+            "expr": "ram_percent",
+            "fullMetaSearch": False,
+            "includeNullMetadata": True,
+            "legendFormat": "__auto",
+            "range": True,
+            "refId": "A",
+            "useBackend": False
+          }
+        ],
+        "title": "RAM Percent",
+        "type": "gauge"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "%UID_PROMETHEUS%"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "hideFrom": {
+                "legend": False,
+                "tooltip": False,
+                "viz": False
+              }
+            },
+            "mappings": []
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        },
+        "id": 4,
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": True
+          },
+          "pieType": "pie",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": False
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.3.0+security-01",
+        "targets": [
+          {
+            "disableTextWrap": False,
+            "editorMode": "builder",
+            "expr": "ram_total_bytes",
+            "fullMetaSearch": False,
+            "includeNullMetadata": True,
+            "legendFormat": "__auto",
+            "range": True,
+            "refId": "A",
+            "useBackend": False
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "%UID_PROMETHEUS%"
+            },
+            "disableTextWrap": False,
+            "editorMode": "builder",
+            "expr": "ram_used_bytes",
+            "fullMetaSearch": False,
+            "hide": False,
+            "includeNullMetadata": True,
+            "instant": False,
+            "legendFormat": "__auto",
+            "range": True,
+            "refId": "B",
+            "useBackend": False
+          }
+        ],
+        "title": "RAM used bytes",
+        "type": "piechart"
+      }
+    ],
+    "preload": False,
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "weekStart": ""
+  },
+  "folderUid": None,
+  "message": "Made changes to xyz",
+  "overwrite": False
+}

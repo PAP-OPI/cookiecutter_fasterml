@@ -1,0 +1,7 @@
+{
+	"name": "test_prometheus_v2",
+	"type": "prometheus",
+	"url": "http://prometheus:9090",
+	"access": "proxy",
+	"basicAuth": False
+}
